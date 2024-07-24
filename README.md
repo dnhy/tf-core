@@ -1,1 +1,1 @@
-This is timefly's back-end system and uses express to provide the required api interface
+This is timefly's back-end system that uses express to provide the required api interface.
