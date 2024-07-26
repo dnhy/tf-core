@@ -16,10 +16,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-require('./plugins/db')(config);
-require('./routes/index')(app);
-
 app.use(
   cors({
     credentials: true,
@@ -29,6 +25,9 @@ app.use(
         : `${process.env.DOMAIN}`,
   }),
 );
+
+require('./plugins/db')(config);
+require('./routes/index')(app);
 
 app.listen(port);
 console.log(`Sever is Starting now...

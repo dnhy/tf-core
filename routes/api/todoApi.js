@@ -8,7 +8,6 @@ const todoModel = require('../../module/todo.js');
 
 router
   .get('/getAllTodos', async (req, res) => {
-    console.log('[ 1111 ] >', 1111);
     const { id } = req.query;
     const { Types } = mongoose;
     const objectId = Types.ObjectId;
@@ -18,20 +17,25 @@ router
     const validId = new objectId(id);
     const search = id ? { _id: validId } : {};
     data = await todoModel.find(search).sort({
-      createtime: 1,
+      createtime: -1,
     });
     data = data.map((d) => ({
       ...d.toJSON(),
       createtime: formatStringDate(new Date(d.createtime)),
     }));
 
+    var msg = '';
     if (data.length === 0) {
-      var msg = id ? '没有找到这条待办呢!' : '还没有新的待办啦！';
-      throw new Error(msg);
+      msg = id ? '没有找到这条待办呢!' : '还没有新的待办啦！';
+      // throw new Error(msg);
+      data = [];
     }
+
+    msg = '查询成功';
 
     res.send({
       ok: 1,
+      msg,
       data,
     });
   })
