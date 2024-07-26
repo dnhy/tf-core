@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+module.exports = (app) => {
+  const router = require('express').Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+  router.use('/todo', require('./api/todoApi'));
 
-module.exports = router;
+  if (process.env.NODE_ENV === 'production') {
+    app.use('/', router);
+  } else {
+    app.use('/api', router);
+  }
+
+  // app.use('/api/moments', require('./moments'))
+  // app.use('/api/master', require('./master'))
+  // app.use('/api/upload', require('./upload'))
+  // app.use('/api/options', require('./options'))
+};
