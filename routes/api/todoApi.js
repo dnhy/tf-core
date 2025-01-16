@@ -2,36 +2,38 @@ var express = require('express');
 const mongoose = require('mongoose');
 const assert = require('http-assert');
 var { formatStringDate } = require('../../utils/index.js');
+var useTransformId = require('../../hooks/useTransformId.js');
+
 var router = express.Router();
 
 const todoModel = require('../../module/todo.js');
 
 router
-  .get('/getAllTodos', async (req, res) => {
+  .get('/getTodos', async (req, res) => {
     const { id } = req.query;
-    const { Types } = mongoose;
-    const objectId = Types.ObjectId;
+    const validId = useTransformId(id);
 
     let data;
 
-    const validId = new objectId(id);
     const search = id ? { _id: validId } : {};
     data = await todoModel.find(search).sort({
       createtime: -1,
     });
-    data = data.map((d) => ({
-      ...d.toJSON(),
-      createtime: formatStringDate(new Date(d.createtime)),
-    }));
+    data = data.map((d) => {
+      return {
+        ...d.toJSON(),
+        createtime: formatStringDate(new Date(d.createtime)),
+      };
+    });
 
     var msg = '';
+    msg = '查询成功';
+
     if (data.length === 0) {
       msg = id ? '没有找到这条待办呢!' : '还没有新的待办啦！';
       // throw new Error(msg);
       data = [];
     }
-
-    msg = '查询成功';
 
     res.send({
       ok: 1,
